@@ -1,0 +1,32 @@
+# Web框架
+flask==2.2.3
+flask-cors==3.0.10
+
+# 环境变量
+python-dotenv==1.0.0
+
+# 图像处理
+Pillow==9.5.0
+numpy==1.24.3
+diffusers==0.14.0
+transformers==4.28.1
+torch==2.0.0
+torchvision==0.15.1
+accelerators==0.1.0
+
+# 视频处理
+moviepy==1.0.3
+ffmpeg-python==0.2.0
+
+# 音频处理
+azure-cognitiveservices-speech==1.28.0
+pydub==0.25.1
+
+# 工具库
+tqdm==4.65.0
+requests==2.28.2
+pandas==2.0.1
+
+# 缓存和任务队列
+redis==4.5.4
+celery==5.2.7
