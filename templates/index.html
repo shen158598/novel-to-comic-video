@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小说转漫画视频生成器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .feature-card {
+            height: 100%;
+            border: none;
+            background-color: #fff;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #6a11cb;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a0cb6 0%, #1565e6 100%);
+            transform: translateY(-2px);
+        }
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+        #resultCard {
+            display: none;
+        }
+        .char-count {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .form-select, .form-control {
+            border-radius: 8px;
+        }
+        .form-check-input:checked {
+            background-color: #6a11cb;
+            border-color: #6a11cb;
+        }
+        .video-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header text-center">
+        <div class="container">
+            <h1><i class="bi bi-book"></i> 小说转漫画视频生成器</h1>
+            <p class="lead">将您的文字故事转换为精美的漫画视频，支持多种风格和AI配音</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 功能介绍 -->
+        <section class="row mb-5">
+            <div class="col-md-4 mb-4">
+                <div class="card feature-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-pencil-square feature-icon"></i>
+                        <h3>文本转漫画</h3>
+                        <p>使用先进的AI技术，将您的文字描述转换为精美的漫画图像，支持多种艺术风格</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card feature-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-film feature-icon"></i>
+                        <h3>视频生成</h3>
+                        <p>自动将生成的漫画图像合成为流畅的视频，支持过渡效果和背景音乐</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card feature-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-mic feature-icon"></i>
+                        <h3>智能配音</h3>
+                        <p>使用高质量AI语音为您的漫画视频添加专业配音，支持多种声音风格</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 输入表单 -->
+        <section class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">创建您的漫画视频</h2>
+                        <form id="generateForm">
+                            <div class="mb-3">
+                                <label for="textInput" class="form-label">输入您的故事文本</label>
+                                <textarea class="form-control" id="textInput" rows="6" placeholder="请输入您想要转换成漫画视频的故事内容..."></textarea>
+                                <div class="char-count text-end mt-1"><span id="charCount">0</span>/5000</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="styleSelect" class="form-label">选择漫画风格</label>
+                                    <select class="form-select" id="styleSelect">
+                                        <option value="default">默认漫画风格</option>
+                                        <option value="anime">动漫风格</option>
+                                        <option value="realistic">写实风格</option>
+                                        <option value="watercolor">水彩风格</option>
+                                        <option value="sketch">素描风格</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="voiceSelect" class="form-label">选择配音声音</label>
+                                    <select class="form-select" id="voiceSelect">
+                                        <option value="zh-CN-XiaoxiaoNeural">小小 (女声)</option>
+                                        <option value="zh-CN-YunxiNeural">云希 (男声)</option>
+                                        <option value="zh-CN-XiaoyiNeural">小怡 (女声)</option>
+                                        <option value="zh-CN-YunjianNeural">云健 (男声)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="useTransitionsCheck" checked>
+                                        <label class="form-check-label" for="useTransitionsCheck">
+                                            使用过渡效果
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="backgroundMusicCheck" checked>
+                                        <label class="form-check-label" for="backgroundMusicCheck">
+                                            添加背景音乐
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                                    <i class="bi bi-magic"></i> 生成漫画视频
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 处理状态 -->
+        <section class="row mt-4" id="statusSection" style="display: none;">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 id="statusText">正在处理您的请求...</h3>
+                        <div class="d-flex justify-content-center my-3">
+                            <div class="spinner-border text-primary loading-spinner" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div class="progress mt-3">
+                            <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="mt-2" id="progressText">0%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 结果展示 -->
+        <section class="row mt-4" id="resultCard" style="display: none;">
+            <div class="col-lg-10 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">您的漫画视频已生成</h3>
+                        <div class="video-container mb-4">
+                            <video id="resultVideo" class="w-100" controls>
+                                您的浏览器不支持视频播放
+                            </video>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary" id="downloadBtn">
+                                <i class="bi bi-download"></i> 下载视频
+                            </button>
+                            <button class="btn btn-outline-primary" id="newGenerationBtn">
+                                <i class="bi bi-plus-circle"></i> 新建生成
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center">
+        <div class="container">
+            <p>© 2023 小说转漫画视频生成器 | 使用AI技术将文字转换为精美漫画视频</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const generateForm = document.getElementById('generateForm');
+            const textInput = document.getElementById('textInput');
+            const charCount = document.getElementById('charCount');
+            const styleSelect = document.getElementById('styleSelect');
+            const voiceSelect = document.getElementById('voiceSelect');
+            const useTransitionsCheck = document.getElementById('useTransitionsCheck');
+            const backgroundMusicCheck = document.getElementById('backgroundMusicCheck');
+            const generateBtn = document.getElementById('generateBtn');
+            const statusSection = document.getElementById('statusSection');
+            const statusText = document.getElementById('statusText');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const resultCard = document.getElementById('resultCard');
+            const resultVideo = document.getElementById('resultVideo');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const newGenerationBtn = document.getElementById('newGenerationBtn');
+            
+            let taskId = null;
+            let checkStatusInterval = null;
+            
+            // 字符计数功能
+            textInput.addEventListener('input', function() {
+                const length = this.value.length;
+                charCount.textContent = length;
+                
+                if (length > 5000) {
+                    charCount.style.color = 'red';
+                    this.value = this.value.substring(0, 5000);
+                    charCount.textContent = 5000;
+                } else {
+                    charCount.style.color = '';
+                }
+            });
+            
+            // 表单提交处理
+            generateForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const text = textInput.value.trim();
+                if (!text) {
+                    alert('请输入故事文本');
+                    return;
+                }
+                
+                if (text.length > 5000) {
+                    alert('文本长度不能超过5000字符');
+                    return;
+                }
+                
+                // 禁用表单
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 处理中...';
+                
+                // 显示状态区域
+                statusSection.style.display = 'block';
+                resultCard.style.display = 'none';
+                
+                // 发送生成请求
+                axios.post('/api/generate', {
+                    text: text,
+                    style: styleSelect.value,
+                    voice: voiceSelect.value,
+                    use_transitions: useTransitionsCheck.checked,
+                    add_background_music: backgroundMusicCheck.checked
+                })
+                .then(function(response) {
+                    taskId = response.data.task_id;
+                    checkStatus(taskId);
+                    checkStatusInterval = setInterval(function() {
+                        checkStatus(taskId);
+                    }, 2000);
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    alert('生成请求失败，请重试');
+                    resetUI();
+                });
+            });
+            
+            // 检查任务状态
+            function checkStatus(taskId) {
+                axios.get(`/api/status/${taskId}`)
+                .then(function(response) {
+                    const data = response.data;
+                    
+                    if (data.status === 'completed') {
+                        clearInterval(checkStatusInterval);
+                        statusSection.style.display = 'none';
+                        resultCard.style.display = 'block';
+                        resultVideo.src = data.video_url;
+                        downloadBtn.setAttribute('data-url', data.video_url);
+                        generateBtn.disabled = false;
+                        generateBtn.innerHTML = '<i class="bi bi-magic"></i> 生成漫画视频';
+                    } else if (data.status === 'failed') {
+                        clearInterval(checkStatusInterval);
+                        alert(`生成失败: ${data.error || '未知错误'}`); 
+                        resetUI();
+                    } else {
+                        // 更新进度
+                        const progress = data.progress || 0;
+                        progressBar.style.width = `${progress}%`;
+                        progressBar.setAttribute('aria-valuenow', progress);
+                        progressText.textContent = `${progress}%`;
+                        statusText.textContent = data.message || '正在处理您的请求...';
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Error checking status:', error);
+                    clearInterval(checkStatusInterval);
+                    alert('检查状态失败，请重试');
+                    resetUI();
+                });
+            }
+            
+            // 下载按钮处理
+            downloadBtn.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = '漫画视频.mp4';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            });
+            
+            // 新建生成按钮处理
+            newGenerationBtn.addEventListener('click', function() {
+                textInput.value = '';
+                charCount.textContent = '0';
+                resultCard.style.display = 'none';
+            });
+            
+            // 重置UI状态
+            function resetUI() {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="bi bi-magic"></i> 生成漫画视频';
+                statusSection.style.display = 'none';
+                progressBar.style.width = '0%';
+                progressBar.setAttribute('aria-valuenow', 0);
+                progressText.textContent = '0%';
+                clearInterval(checkStatusInterval);
+            }
+        });
+    </script>
+</body>
+</html>
