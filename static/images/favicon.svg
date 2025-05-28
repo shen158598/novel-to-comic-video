@@ -1,0 +1,19 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="16" cy="16" r="15" fill="#6c5ce7" />
+  <circle cx="16" cy="16" r="13" fill="white" />
+  
+  <!-- 简化的漫画书图标 -->
+  <rect x="7" y="7" width="18" height="14" fill="#6c5ce7" rx="1" ry="1" />
+  
+  <!-- 书本中线 -->
+  <line x1="16" y1="7" x2="16" y2="21" stroke="white" stroke-width="1" />
+  
+  <!-- 简化的漫画人物 -->
+  <circle cx="11.5" cy="14" r="3" fill="#fd79a8" />
+  <circle cx="20.5" cy="14" r="3" fill="#00cec9" />
+  
+  <!-- 视频播放图标 -->
+  <circle cx="16" cy="24" r="4" fill="#fd79a8" />
+  <polygon points="14,22 14,26 19,24" fill="white" />
+</svg>
