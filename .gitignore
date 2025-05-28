@@ -1,0 +1,52 @@
+# Python虚拟环境
+venv/
+env/
+.env
+
+# Python缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件和目录
+tmp/
+temp/
+
+# 上传和输出文件
+uploads/
+outputs/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE配置文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 依赖缓存
+.pip_cache/
+
+# 分发文件
+dist/
+build/
+*.egg-info/
+
+# 测试覆盖率报告
+.coverage
+htmlcov/
+
+# 本地配置文件
+config.local.py
+
+# 背景音乐文件（需要用户手动下载）
+static/audio/*.mp3
+static/audio/*.wav
+!static/audio/README.txt
